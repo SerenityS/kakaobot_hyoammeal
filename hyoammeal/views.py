@@ -13,7 +13,7 @@ def keyboard(request):
         'buttons': ['조식', '중식', '석식', '내일의 조식', '내일의 중식', '내일의 석식']
     })
 
-# csrf 토큰 에러 방지, POST 요청에 반응
+# csrf 토큰 에러 방지, POST 요청에 message response
 @csrf_exempt
 def message(request):
     json_str = ((request.body).decode('utf-8'))
@@ -50,7 +50,6 @@ def message(request):
             }
      })
 
-
 # message 요청 받을시 크롤링 실시
 def crawl(request):
     from bs4 import BeautifulSoup
@@ -59,6 +58,10 @@ def crawl(request):
     json_str = ((request.body).decode('utf-8'))
     received_json_data = json.loads(json_str)
     meal = received_json_data['content']
+
+    #타학교에서 이용시 수정
+    regionCode = 'gne.go.kr'
+    schulCode = 'S100000747'
 
     ScCode = 1
 
@@ -69,8 +72,8 @@ def crawl(request):
     if meal == '석식' or meal == '내일의 석식':
         ScCode = 3
 
-    # NEIS에서 파싱, 타학교는 schulCode 수정 필요
-    html = urlopen('http://stu.gne.go.kr/sts_sci_md01_001.do?schulCode=S100000747&schulCrseScCode=4&schulKndScCode=04&schMmealScCode=' + str(ScCode))
+    # NEIS에서 파싱
+    html = urlopen('http://stu.' + regionCode + '/sts_sci_md01_001.do?schulCode='+ schulCode + '&schulCrseScCode=4&schulKndScCode=04&schMmealScCode=' + str(ScCode))
     source = html.read()
     html.close()
 
