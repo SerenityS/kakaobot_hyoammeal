@@ -45,7 +45,7 @@ source myvenv/bin/activate
 ### 5. 첫 마이그레이션 & 실행
 <code>python3 manage.py migrate</code>
 
-<code>python3 manage.py runserver <host-ip>:8000</code>
+<code>python3 manage.py runserver host-ip:8000</code>
 
 아래와 같이 뜬다면 정상적으로 실행된 것이다.
 <pre><code>Performing system checks...
