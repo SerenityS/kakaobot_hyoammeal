@@ -23,35 +23,34 @@ def message(request):
     received_json_data = json.loads(json_str)
     meal = received_json_data['content']
 
-    dayString = ["월", "화", "수", "목", "금", "토", "일"]
+    daystring = ["월", "화", "수", "목", "금", "토", "일"]
     today = datetime.datetime.today().weekday()
 
-    nextdayString = ["화", "수", "목", "금", "토", "일", "월"]
-    tomorrow = datetime.datetime.today().weekday()
+    nextdaystring = ["화", "수", "목", "금", "토", "일", "월"]
 
     today_date = datetime.date.today().strftime("%m월 %d일 ")
-    tomorrow_date = date.fromtimestamp(time.time() + 60*60*24).strftime("%m월 %d일 ")
+    tomorrow_date = date.fromtimestamp(time.time() + 60 * 60 * 24).strftime("%m월 %d일 ")
 
     if meal == '조식' or meal == '중식' or meal == '석식':
         return JsonResponse({
             'message': {
-                'text': today_date + str(dayString[today]) + '요일 ' + meal + ' 메뉴입니다. \n \n' + str(crawl(request))
+                'text': today_date + daystring[today] + '요일 ' + meal + ' 메뉴입니다. \n \n' + crawl(request)
             },
             'keyboard': {
                 'type': 'buttons',
                 'buttons': ['조식', '중식', '석식', '내일의 조식', '내일의 중식', '내일의 석식']
             }
-     })
+        })
     if meal == '내일의 조식' or meal == '내일의 중식' or meal == '내일의 석식':
         return JsonResponse({
             'message': {
-                'text': '['+ meal + '] \n' + tomorrow_date + str(nextdayString[tomorrow]) + '요일 급식 메뉴입니다. \n \n' + str(crawl(request))
+                'text': '[' + meal + '] \n' + tomorrow_date + nextdaystring[today] + '요일 급식 메뉴입니다. \n \n' + crawl(request)
             },
             'keyboard': {
                 'type': 'buttons',
                 'buttons': ['내일의 조식', '내일의 중식', '내일의 석식', '조식', '중식', '석식']
             }
-     })
+        })
 
 # message 요청 받을시 크롤링 실시
 def crawl(request):
@@ -62,21 +61,19 @@ def crawl(request):
     received_json_data = json.loads(json_str)
     meal = received_json_data['content']
 
-    #타학교에서 이용시 수정
-    regionCode = 'gne.go.kr'
-    schulCode = 'S100000747'
-
-    ScCode = 1
+    # 타학교에서 이용시 수정
+    regioncode = 'gne.go.kr'
+    schulcode = 'S100000747'
 
     if meal == '조식' or meal == '내일의 조식':
-        ScCode = 1
+        sccode = 1
     if meal == '중식' or meal == '내일의 중식':
-        ScCode = 2
+        sccode = 2
     if meal == '석식' or meal == '내일의 석식':
-        ScCode = 3
+        sccode = 3
 
     # NEIS에서 파싱
-    html = urlopen('http://stu.' + regionCode + '/sts_sci_md01_001.do?schulCode='+ schulCode + '&schulCrseScCode=4&schulKndScCode=04&schMmealScCode=' + str(ScCode))
+    html = urlopen('http://stu.' + regioncode + '/sts_sci_md01_001.do?schulCode=' + schulcode + '&schulCrseScCode=4&schulKndScCode=04&schMmealScCode=' + str(sccode))
     source = html.read()
     html.close()
 
@@ -106,8 +103,7 @@ def crawl(request):
             menu = td[12]
         elif today == 6:
             menu = td[13]
-
-    elif meal == '내일의 조식' or meal == '내일의 중식' or meal == '내일의 석식':
+    if meal == '내일의 조식' or meal == '내일의 중식' or meal == '내일의 석식':
         if today == 0:
             menu = td[9]
         elif today == 1:
@@ -119,9 +115,9 @@ def crawl(request):
         elif today == 5:
             menu = td[13]
         elif today == 6:
-            menu = td[14]
+            menu = td[8]
 
     # 파싱 후 불필요한 태그 잔해물 제거
-    menu = str(menu).replace(' ', '').replace('*', '').replace('<td', "").replace('<br/>', "\n").replace('class="textC">', '').replace('</td>', '').replace('1.', '').replace('2.', '').replace('3.', '').replace('4.', '').replace('5.', '').replace('6.', '').replace('7.', '').replace('8.', '').replace('9.', '').replace('10.', '').replace('11.', '').replace('12.', '').replace('13.', '').replace('14.', '').replace('15.', '').replace('1', '')
+    menu = str(menu).replace(' ', '').replace('*', '').replace('<td', "").replace('<br/>', "\n").replace('class="textC">', '').replace('</td>', '').replace('1.', '').replace('2.', '').replace('3.', '').replace('4.','').replace('5.', '').replace('6.', '').replace('7.', '').replace('8.', '').replace('9.', '').replace('10.', '').replace('11.', '').replace('12.', '').replace('13.', '').replace('14.', '').replace('15.', '').replace('1', '')
 
     return menu
