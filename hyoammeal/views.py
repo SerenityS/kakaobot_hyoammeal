@@ -6,6 +6,9 @@ from django.http import JsonResponse
 import json, time, datetime
 from datetime import date
 
+import logging
+logger = logging.getLogger(__name__)
+
 # GET ~/keyboard/ 요청에 반응
 def keyboard(request):
     return JsonResponse({
