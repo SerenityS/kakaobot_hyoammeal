@@ -14,8 +14,9 @@ Including another URLconf
     2. Add a URL to urlpatterns:  url(r'^blog/', include(blog_urls))
 """
 
-from django.conf.urls import url, include
- 
+from django.conf.urls import url, include 
+
 urlpatterns = [
+    # hyoammeal 폴더안의 urls.py를 불러옵니다.
     url(r'',include('hyoammeal.urls')),
 ]
