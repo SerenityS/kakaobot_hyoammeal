@@ -42,7 +42,7 @@ def message(request):
     if meal == '내일의 조식' or meal == '내일의 중식' or meal == '내일의 석식':
         return JsonResponse({
             'message': {
-                'text': '['+ meal '] \n' + tomorrow_date + str(nextdayString[tomorrow]) + '요일 급식 메뉴입니다. \n \n' + str(crawl(request))
+                'text': '['+ meal + '] \n' + tomorrow_date + str(nextdayString[tomorrow]) + '요일 급식 메뉴입니다. \n \n' + str(crawl(request))
             },
             'keyboard': {
                 'type': 'buttons',
