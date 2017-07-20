@@ -99,10 +99,13 @@ def crawl(request):
             menu = td[10]
         elif today == 3:
             menu = td[11]
-        elif today == 5:
+        elif today == 4:
             menu = td[12]
+        elif today == 5:
+            menu = td[13]
         elif today == 6:
             menu = td[13]
+
     if meal == '내일의 조식' or meal == '내일의 중식' or meal == '내일의 석식':
         if today == 0:
             menu = td[9]
@@ -112,8 +115,10 @@ def crawl(request):
             menu = td[11]
         elif today == 3:
             menu = td[12]
-        elif today == 5:
+        elif today == 4:
             menu = td[13]
+        elif today == 5:
+            menu = td[14]
         elif today == 6:
             menu = td[8]
 
