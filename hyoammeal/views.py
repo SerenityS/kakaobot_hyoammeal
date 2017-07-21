@@ -123,6 +123,9 @@ def crawl(request):
             menu = td[8]
 
     # 파싱 후 불필요한 태그 잔해물 제거
-    menu = str(menu).replace(' ', '').replace('*', '').replace('<td', "").replace('<br/>', "\n").replace('class="textC">', '').replace('</td>', '').replace('1.', '').replace('2.', '').replace('3.', '').replace('4.','').replace('5.', '').replace('6.', '').replace('7.', '').replace('8.', '').replace('9.', '').replace('10.', '').replace('11.', '').replace('12.', '').replace('13.', '').replace('14.', '').replace('15.', '').replace('1', '')
+    menu = str(menu).replace('*', '').replace('<td', "").replace('<br/>', "\n").replace('class="textC last">', '').replace('class="textC">', '').replace('</td>', '').replace('1.', '').replace('2.', '').replace('3.', '').replace('4.', '').replace('5.', '').replace('6.', '').replace('7.', '').replace('8.', '').replace('9.', '').replace('10.', '').replace('11.', '').replace('12.', '').replace('13.', '').replace('14.', '').replace('15.', '').replace('1', '').replace(' ', '')
+
+    if menu == '':
+        menu = '급식이 없습니다.'
 
     return menu
