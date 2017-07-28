@@ -31,7 +31,8 @@
 http://egloos.zum.com/killins/v/3014274를 보고 로케일을 수정하자.
 
 ### 1. 기초 패키지 설치
-<code>sudo apt-get install python3 python3-pip python3-venv</code>
+<pre> sudo apt-get update
+sudo apt-get install python3 python3-pip python3-venv</pre>
 ### 2. 레포지터리 클론 및 이동
 <code>git clone https://github.com/SerenityS/kakaobot_hyoammeal <working_dir> </code>
 
