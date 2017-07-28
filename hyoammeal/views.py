@@ -92,13 +92,13 @@ def crawl(request):
     # 월요일 ~ 일요일 = td[8] ~ td[14]
     if meal == '조식' or meal == '중식' or meal == '석식':
         if today == 6:
-            menu = '일요일은 급식이 제공되지 않습니다.'
+            menu = '일요일'
         else:
             menu = td[today + 8]
 
     if meal == '내일의 조식' or meal == '내일의 중식' or meal == '내일의 석식':
         if today == 5:
-            menu = '일요일은 급식이 제공되지 않습니다'
+            menu = '일요일'
         elif today == 6:
             menu = td[8]
         else:
@@ -108,6 +108,9 @@ def crawl(request):
     menu = str(menu).replace('*', '').replace('<td', '').replace('<br/></td>', '').replace('</td>', '').replace('class="textC last">', '').replace('class="textC">', '').replace('<br/>', '\n').replace('1.', '').replace('2.', '').replace('3.', '').replace('4.', '').replace('5.', '').replace('6.', '').replace('7.', '').replace('8.', '').replace('9.', '').replace('10.', '').replace('11.', '').replace('12.', '').replace('13.', '').replace('14.', '').replace('15.', '').replace('1', '').replace(' ', '')
 
     if menu == '':
-        menu = '급식이 없습니다.'
+        menu = '급식 정보가 존재하지 않습니다. 급식이 없는 날일 수 있으니 확인 바랍니다.'
+
+    if menu == '일요일':
+        menu = '일요일은 급식이 제공되지 않습니다.'
 
     return menu
