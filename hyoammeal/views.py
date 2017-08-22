@@ -77,7 +77,8 @@ def crawl(request):
 
     try:
         source = urllib.request.urlopen(url, timeout=3)
-    except Exception:
+    except Exception as e:
+        logger.error(e)
         menu = '급식 정보를 가져오는 중 문제가 발생하였습니다.\n관리자에게 연락바랍니다.'
     else:
         # beautifulsoup4를 이용해 utf-8, lxml으로 파싱
