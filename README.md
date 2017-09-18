@@ -86,8 +86,15 @@ schulCode = 'S100000747'
 ```
 라는 코드를 발견할 수 있다.
 여기서 regionCode는 각 시도교육청의 주소이며, schulCode는 [링크](http://weezzle.tistory.com/559) 를 참조하도록 하자.
-  
-### 8. 카카오톡 플러스 친구와 연동
+
+### 8. crontab을 통한 crawl.py의 주기적 실행
+```
+crontab -e
+# 매주 일요일 0시 0분에 crawl.py 실행
+0 0 * * 7 python3 ~/meal/hyoammeal/crawl.py
+```
+
+### 9. 카카오톡 플러스 친구와 연동
 타게시물들을 참조하도록 하자.
 
 ## 작동 화면

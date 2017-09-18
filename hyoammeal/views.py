@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 def keyboard(request):
     return JsonResponse({
         'type': 'buttons',
-        'buttons': ['조식', '중식', '석식', '내일의 조식', '내일의 중식', '내일의 석식']
+        'buttons': ['오늘 식단표', '내일 식단표', '다른 요일 식단표']
     })
 
 # csrf 토큰 에러 방지, POST 요청에 message response
@@ -31,26 +31,116 @@ def message(request):
     today_date = datetime.date.today().strftime("%m월 %d일 ")
     tomorrow_date = date.fromtimestamp(time.time() + 60 * 60 * 24).strftime("%m월 %d일 ")
 
-    if meal == '조식' or meal == '중식' or meal == '석식':
+    if meal == '오늘 식단표':
         return JsonResponse({
             'message': {
-                'text': today_date + daystring[today] + '요일 ' + meal + ' 메뉴입니다. \n \n' + crawl(request)
+                'text': '[' + meal + '] \n' + today_date + daystring[today] + '요일 식단표입니다. \n \n' + read_txt(request)
             },
             'keyboard': {
                 'type': 'buttons',
-                'buttons': ['조식', '중식', '석식', '내일의 조식', '내일의 중식', '내일의 석식']
+                'buttons': ['오늘 식단표', '내일 식단표', '다른 요일 식단표']
             }
         })
-    if meal == '내일의 조식' or meal == '내일의 중식' or meal == '내일의 석식':
+    elif meal == '내일 식단표':
         return JsonResponse({
             'message': {
-                'text': '[' + meal + '] \n' + tomorrow_date + nextdaystring[today] + '요일 급식 메뉴입니다. \n \n' + crawl(request)
+                'text': '[' + meal + '] \n' + tomorrow_date + nextdaystring[today] + '요일 식단표입니다. \n \n' + read_txt(request)
             },
             'keyboard': {
                 'type': 'buttons',
-                'buttons': ['조식', '중식', '석식', '내일의 조식', '내일의 중식', '내일의 석식']
+                'buttons': ['오늘 식단표', '내일 식단표', '다른 요일 식단표']
             }
         })
+    elif meal == '다른 요일 식단표':
+        return JsonResponse({
+            'message': {
+                'text': '식단 정보가 필요한 요일을 입력해주세요\n입력 가능 요일 : 월 화 수 목 금 토'
+            },
+            'keyboard': {
+                'type': 'text'
+            }
+        })
+    elif meal == '월' or meal == '화' or meal == '수' or meal == '목' or meal == '금' or meal == '토':
+        return JsonResponse({
+            'message': {
+                'text': meal + '요일 식단표입니다. \n \n' + read_txt(request)
+            },
+            'keyboard': {
+                'type': 'buttons',
+                'buttons': ['오늘 식단표', '내일 식단표', '다른 요일 식단표']
+            }
+        })
+    else:
+        return JsonResponse({
+            'message': {
+                'text': '잘못된 명령어입니다.\n입력 가능 명령어 : 월 화 수 목 금 토'
+            },
+            'keyboard': {
+                'type': 'text'
+            }
+        })
+
+def read_txt(request):
+    json_str = ((request.body).decode('utf-8'))
+    received_json_data = json.loads(json_str)
+    meal = received_json_data['content']
+
+    # 요일 import, 월요일 ~ 일요일 = 0~6
+    today = datetime.datetime.today().weekday()
+
+    # 0(월요일) ~ 6(일요일).txt read
+    if meal == '오늘 식단표':
+        if today == 6:
+            menu = '일요일은 급식이 제공되지 않습니다.'
+        else:
+            f = open(str(today) + ".txt", 'r')
+            menu = f.read()
+            f.close()
+
+    if meal == '내일 식단표':
+        if today == 5:
+            menu = '일요일은 급식이 제공되지 않습니다.'
+        elif today == 6:
+            f = open("0.txt", 'r')
+            menu = f.read()
+            f.close()
+        else:
+            today = today + 1
+            f = open(str(today) + ".txt", 'r')
+            menu = f.read()
+            f.close()
+
+    if meal == '월':
+        f = open("0.txt", 'r')
+        menu = f.read()
+        f.close()
+
+    if meal == '화':
+        f = open("1.txt", 'r')
+        menu = f.read()
+        f.close()
+
+    if meal == '수':
+        f = open("2.txt", 'r')
+        menu = f.read()
+        f.close()
+
+    if meal == '목':
+        f = open("3.txt", 'r')
+        menu = f.read()
+        f.close()
+
+    if meal == '금':
+        f = open("4.txt", 'r')
+        menu = f.read()
+        f.close()
+
+    if meal == '토':
+        f = open("5.txt", 'r')
+        menu = f.read()
+        f.close()
+
+    return menu
 
 # message 요청 받을시 크롤링 실시
 def crawl(request):
@@ -65,15 +155,8 @@ def crawl(request):
     regioncode = 'gne.go.kr'
     schulcode = 'S100000747'
 
-    if meal == '조식' or meal == '내일의 조식':
-        sccode = 1
-    if meal == '중식' or meal == '내일의 중식':
-        sccode = 2
-    if meal == '석식' or meal == '내일의 석식':
-        sccode = 3
-
     # NEIS에서 파싱
-    url = ('http://stu.' + regioncode + '/sts_sci_md01_001.do?schulCode=' + schulcode + '&schulCrseScCode=4&schulKndScCode=04&schMmealScCode=' + str(sccode))
+    url = ('http://stu.' + regioncode + '/sts_sci_md01_001.do?schulCode=' + schulcode + '&schulCrseScCode=4&schulKndScCode=04&schMmealScCode=1')
 
     try:
         source = urllib.request.urlopen(url, timeout=3)
@@ -94,13 +177,13 @@ def crawl(request):
         today = datetime.datetime.today().weekday()
 
         # 월요일 ~ 일요일 = td[8] ~ td[14]
-        if meal == '조식' or meal == '중식' or meal == '석식':
+        if meal == '오늘 식단표':
             if today == 6:
                 menu = '일요일'
             else:
                 menu = td[today + 8]
 
-        if meal == '내일의 조식' or meal == '내일의 중식' or meal == '내일의 석식':
+        if meal == '내일 식단표':
             if today == 5:
                 menu = '일요일'
             elif today == 6:
