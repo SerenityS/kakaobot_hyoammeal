@@ -141,3 +141,6 @@ fabric.properties
 
 # virtual environment
 /myvenv
+
+# crawl
+*.txt

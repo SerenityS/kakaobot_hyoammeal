@@ -60,7 +60,7 @@ def message(request):
                 'type': 'text'
             }
         })
-    elif meal == '월' or meal == '화' or meal == '수' or meal == '목' or meal == '금' or meal == '토':
+    elif meal in daystring and meal != "일":
         return JsonResponse({
             'message': {
                 'text': meal + '요일 식단표입니다. \n \n' + read_txt(request)
@@ -73,7 +73,7 @@ def message(request):
     else:
         return JsonResponse({
             'message': {
-                'text': '잘못된 명령어입니다.\n입력 가능 명령어 : 월 화 수 목 금 토'
+                'text': '잘못된 명령어입니다 ' + '[' + meal + ']' + '\n입력 가능 명령어 : 월 화 수 목 금 토'
             },
             'keyboard': {
                 'type': 'text'
@@ -87,43 +87,20 @@ def read_txt(request):
 
     # 요일 import, 월요일 ~ 일요일 = 0~6
     today = datetime.datetime.today().weekday()
+    daystring = ["월", "화", "수", "목", "금", "토"]
 
     # 0(월요일) ~ 5(토요일).txt read
     if meal == '오늘 식단표':
-        if today == 6:
-            menu = '일요일은 급식이 제공되지 않습니다.'
-        else:
-            f = open(str(today) + ".txt", 'r')
-
+        f = open(str(today) + ".txt", 'r')
     if meal == '내일 식단표':
-        if today == 5:
-            menu = '일요일은 급식이 제공되지 않습니다.'
-        elif today == 6:
+        if today == 6:
             f = open("0.txt", 'r')
         else:
             today = today + 1
             f = open(str(today) + ".txt", 'r')
-
-    if meal == '월':
-        f = open("0.txt", 'r')
-
-    if meal == '화':
-        f = open("1.txt", 'r')
-
-    if meal == '수':
-        f = open("2.txt", 'r')
-
-    if meal == '목':
-        f = open("3.txt", 'r')
-
-    if meal == '금':
-        f = open("4.txt", 'r')
-
-    if meal == '토':
-        f = open("5.txt", 'r')
-
-    if menu != '일요일은 급식이 제공되지 않습니다.'
-        menu = f.read()
-        f.close()
+    if meal in daystring:
+        f = open(str(daystring.index(meal)) + ".txt", 'r')
+    menu = f.read()
+    f.close()
 
     return menu
