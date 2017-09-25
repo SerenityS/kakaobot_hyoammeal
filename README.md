@@ -24,6 +24,7 @@
 * beautifulsoup4
 * urllib
 * lxml
+* dateutil
 
 # 설치법
 ## 유의사항
@@ -42,7 +43,7 @@ sudo apt-get install python3 python3-pip python3-venv</pre>
 source myvenv/bin/activate
 </code></pre>
 ### 4. python 추가 요구 패키지 설치
-<code>pip install Django lxml beautifulsoup4</code>
+<code>pip install Django lxml beautifulsoup4 python-dateutil</code>
 ### 5. 첫 마이그레이션 & 실행
 <code>python3 manage.py migrate</code>
 

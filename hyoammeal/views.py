@@ -3,8 +3,9 @@
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 
-import json, time, datetime
-from datetime import date
+import json
+from datetime import *
+from dateutil.relativedelta import *
 
 import logging
 logger = logging.getLogger(__name__)
@@ -24,17 +25,18 @@ def message(request):
     meal = received_json_data['content']
 
     daystring = ["월", "화", "수", "목", "금", "토", "일"]
-    today = datetime.datetime.today().weekday()
-
     nextdaystring = ["화", "수", "목", "금", "토", "일", "월"]
 
-    today_date = datetime.date.today().strftime("%m월 %d일 ")
-    tomorrow_date = date.fromtimestamp(time.time() + 60 * 60 * 24).strftime("%m월 %d일 ")
+    today = date.today().weekday()
+    today_date = date.today()
+    tomorrow_date = today_date+relativedelta(days=+1)
+    if meal in daystring:
+        days = today_date + relativedelta(days=-today, weekday=daystring.index(meal))
 
     if meal == '오늘 식단표':
         return JsonResponse({
             'message': {
-                'text': '[' + meal + '] \n' + today_date + daystring[today] + '요일 식단표입니다. \n \n' + read_txt(request)
+                'text': '[' + meal + '] \n' + today_date.strftime("%m월 %d일 ") + daystring[today] + '요일 식단표입니다. \n \n' + read_txt(request)
             },
             'keyboard': {
                 'type': 'buttons',
@@ -44,7 +46,7 @@ def message(request):
     elif meal == '내일 식단표':
         return JsonResponse({
             'message': {
-                'text': '[' + meal + '] \n' + tomorrow_date + nextdaystring[today] + '요일 식단표입니다. \n \n' + read_txt(request)
+                'text': '[' + meal + '] \n' + tomorrow_date.strftime("%m월 %d일 ") + nextdaystring[today] + '요일 식단표입니다. \n \n' + read_txt(request)
             },
             'keyboard': {
                 'type': 'buttons',
@@ -63,7 +65,7 @@ def message(request):
     elif meal in daystring and meal != "일":
         return JsonResponse({
             'message': {
-                'text': meal + '요일 식단표입니다. \n \n' + read_txt(request)
+                'text': days.strftime("%m월 %d일 ") + meal + '요일 식단표입니다. \n \n' + read_txt(request)
             },
             'keyboard': {
                 'type': 'buttons',
@@ -86,7 +88,7 @@ def read_txt(request):
     meal = received_json_data['content']
 
     # 요일 import, 월요일 ~ 일요일 = 0~6
-    today = datetime.datetime.today().weekday()
+    today = date.today().weekday()
     daystring = ["월", "화", "수", "목", "금", "토"]
 
     # 0(월요일) ~ 5(토요일).txt read
