@@ -36,7 +36,7 @@ def message(request):
     if meal == '오늘 식단표':
         return JsonResponse({
             'message': {
-                'text': '[' + meal + '] \n' + today_date.strftime("%m월 %d일 ") + daystring[today] + '요일 식단표입니다. \n \n' + read_txt(request)
+                'text': '[' + meal + '] \n' + today_date.strftime("%m월 %d일 ") + daystring[today] + '요일 식단표입니다. \n \n' + read_txt(meal, today, daystring)
             },
             'keyboard': {
                 'type': 'buttons',
@@ -46,7 +46,7 @@ def message(request):
     elif meal == '내일 식단표':
         return JsonResponse({
             'message': {
-                'text': '[' + meal + '] \n' + tomorrow_date.strftime("%m월 %d일 ") + nextdaystring[today] + '요일 식단표입니다. \n \n' + read_txt(request)
+                'text': '[' + meal + '] \n' + tomorrow_date.strftime("%m월 %d일 ") + nextdaystring[today] + '요일 식단표입니다. \n \n' + read_txt(meal, today, daystring)
             },
             'keyboard': {
                 'type': 'buttons',
@@ -65,7 +65,7 @@ def message(request):
     elif meal in daystring and meal != "일":
         return JsonResponse({
             'message': {
-                'text': days.strftime("%m월 %d일 ") + meal + '요일 식단표입니다. \n \n' + read_txt(request)
+                'text': days.strftime("%m월 %d일 ") + meal + '요일 식단표입니다. \n \n' + read_txt(meal, today, daystring)
             },
             'keyboard': {
                 'type': 'buttons',
@@ -82,15 +82,7 @@ def message(request):
             }
         })
 
-def read_txt(request):
-    json_str = ((request.body).decode('utf-8'))
-    received_json_data = json.loads(json_str)
-    meal = received_json_data['content']
-
-    # 요일 import, 월요일 ~ 일요일 = 0~6
-    today = date.today().weekday()
-    daystring = ["월", "화", "수", "목", "금", "토"]
-
+def read_txt(meal, today, daystring):
     # 0(월요일) ~ 5(토요일).txt read
     if meal == '오늘 식단표':
         f = open(str(today) + ".txt", 'r')
