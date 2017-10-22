@@ -31,7 +31,10 @@ def message(request):
     today_date = date.today()
     tomorrow_date = today_date+relativedelta(days=+1)
     if meal in daystring:
-        days = today_date + relativedelta(days=-today, weekday=daystring.index(meal))
+        if today != 6:
+            days = today_date + relativedelta(days=-today, weekday=daystring.index(meal))
+        else:
+            days = today_date + relativedelta(weekday=daystring.index(meal))
 
     if meal == '오늘 식단표':
         return JsonResponse({
