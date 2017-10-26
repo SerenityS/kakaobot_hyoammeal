@@ -92,7 +92,7 @@ schulCode = 'S100000747'
 ```
 crontab -e
 # 매주 일요일 0시 0분에 crawl.py 실행
-0 0 * * 7 0 0 * * 7 cd ~/meal && /usr/bin/python3 ~/meal/hyoammeal/crawl.py
+0 0 * * 7 cd ~/meal && /usr/bin/python3 ~/meal/hyoammeal/crawl.py
 ```
 
 ### 9. 카카오톡 플러스 친구와 연동
