@@ -41,11 +41,13 @@ while sccode < 4:
                 if sccode == 1:
                     f = open(str(today) + ".txt", 'w')
                     f.write("[조식]\n")
+                    f.write(menu)
                 elif sccode == 2:
                     f.write("\n\n[중식]\n")
+                    f.write(menu)
                 elif sccode == 3 and today != 5:
                     f.write("\n\n[석식]\n")
-                f.write(menu)
+                    f.write(menu)
             else:
                 f = open(str(today) + ".txt", 'w')
                 f.write("일요일은 급식이 제공되지 않습니다.")
