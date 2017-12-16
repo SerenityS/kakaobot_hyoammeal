@@ -47,7 +47,7 @@ source myvenv/bin/activate
 ### 5. 첫 마이그레이션 & 실행
 <code>python3 manage.py migrate</code>
 
-<code>python3 manage.py runserver host-ip:8000</code>
+<code>python3 manage.py runserver host-ip:port</code>
 
 아래와 같이 뜬다면 정상적으로 실행된 것이다.
 <pre><code>Performing system checks...
@@ -58,9 +58,9 @@ Starting development server at http://host-ip:8000/
 Quit the server with CONTROL-C.</code></pre>
 여의치 않다면 127.0.0.1 루프백으로 두고 실행해서 테스트해도 된다.
 ### 6. 동작 확인
-카카오톡 플러스친구 자동등답 API에선 http://host-ip:8000/keyboard/에 대한 반응을 필수로 요구한다.
+카카오톡 플러스친구 자동등답 API에선 http://host-ip:port/keyboard에 대한 반응을 필수로 요구한다.
 
-터미널에 <code>curl -XGET 'http://host-ip:8000/keyboard/'</code>를 입력해보자.
+터미널에 <code>curl -XGET 'http://host-ip:port/keyboard/'</code>를 입력해보자.
 <pre><code>serenitys@serenitys-X34:~$ curl -XGET 'http://host-ip:8000/keyboard/'
 {"type": "buttons", "buttons": ["\uc870\uc2dd", "\uc911\uc2dd", "\uc11d\uc2dd", "\ub0b4\uc77c\uc758 \uc870\uc2dd", "\ub0b4\uc77c\uc758 \uc911\uc2dd", "\ub0b4\uc77c\uc758 \uc11d\uc2dd"]}</code></pre>
 정상적으로 작동한다면 이와 같은 정보가 오는것을 확인할 수 있다.
@@ -69,7 +69,7 @@ Quit the server with CONTROL-C.</code></pre>
  
 터미널에 
 ```
-curl -XPOST 'http://host-ip:8000/message' -d '{ "user_key": "encryptedUserKey", "type" : "text", "content": "중식"}'
+curl -XPOST 'http://host-ip:port/message' -d '{ "user_key": "encryptedUserKey", "type" : "text", "content": "오늘의 급식"}'
 ```
   를 입력해보자.
   
@@ -79,7 +79,7 @@ curl -XPOST 'http://host-ip:8000/message' -d '{ "user_key": "encryptedUserKey", 
 ### 7. 학교 코드 수정
 타학교에서 사용하기 위해선 학교 코드 수정이 필요하다.
 
-hyoammeal/views.py를 열어보자.
+hyoammeal/crawl.py를 열어보자.
 ```python
 # 타학교에서 이용시 수정
 regionCode = 'gne.go.kr'
@@ -91,6 +91,9 @@ schulCode = 'S100000747'
 ### 8. crontab을 통한 crawl.py의 주기적 실행
 ```
 crontab -e
+```
+
+```
 # 매주 일요일 0시 0분에 crawl.py 실행
 0 0 * * 7 cd ~/meal && /usr/bin/python3 ~/meal/hyoammeal/crawl.py
 ```
