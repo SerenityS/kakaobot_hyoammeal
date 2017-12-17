@@ -7,7 +7,7 @@ schulcode = 'S100000747'
 
 sccode = 1
 while sccode < 4:
-    # NEIS에서 조식 파싱
+    # NEIS에서 급식 파싱
     url = ('http://stu.' + regioncode + '/sts_sci_md01_001.do?schulCode=' + schulcode + '&schulCrseScCode=4&schulKndScCode=04&schMmealScCode=' + str(sccode))
     try:
         source = urllib.request.urlopen(url, timeout=3)
@@ -32,7 +32,7 @@ while sccode < 4:
             # 파싱 후 불필요한 태그 잔해물 제거
             menu = str(menu).replace('*', '').replace('<td', "").replace('<br/></td>', "").replace('</td>', '').replace('class="textC last">', '').replace('class="textC">','').replace('<br/>', '\n').replace('1.', '').replace('2.', '').replace('3.', '').replace('4.', '').replace('5.', '').replace('6.','').replace('7.', '').replace('8.', '').replace('9.', '').replace('10.', '').replace('11.', '').replace('12.', '').replace('13.', '').replace('14.', '').replace('15.', '').replace('1', '').replace(' ', '')
 
-            if menu == '':
+            if menu == '' and menu != 6 and sccode != 3:
                 menu = '급식 정보가 존재하지 않습니다.\n급식이 없는 날일 수 있으니 확인 바랍니다.'
 
             f = open(str(today) + ".txt", 'a')
@@ -41,13 +41,11 @@ while sccode < 4:
                 if sccode == 1:
                     f = open(str(today) + ".txt", 'w')
                     f.write("[조식]\n")
-                    f.write(menu)
                 elif sccode == 2:
                     f.write("\n\n[중식]\n")
-                    f.write(menu)
                 elif sccode == 3 and today != 5:
                     f.write("\n\n[석식]\n")
-                    f.write(menu)
+                f.write(menu)
             else:
                 f = open(str(today) + ".txt", 'w')
                 f.write("일요일은 급식이 제공되지 않습니다.")
