@@ -4,6 +4,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 
 import json
+import sqlite3
 from datetime import *
 from dateutil.relativedelta import *
 
@@ -39,7 +40,7 @@ def message(request):
     if meal == '오늘 식단표':
         return JsonResponse({
             'message': {
-                'text': '[' + meal + '] \n' + today_date.strftime("%m월 %d일 ") + daystring[today] + '요일 식단표입니다. \n \n' + read_txt(meal, today, daystring)
+                'text': '[' + meal + '] \n' + today_date.strftime("%m월 %d일 ") + daystring[today] + '요일 식단표입니다. \n \n' + data_from_db(meal, today, daystring)
             },
             'keyboard': {
                 'type': 'buttons',
@@ -49,7 +50,7 @@ def message(request):
     elif meal == '내일 식단표':
         return JsonResponse({
             'message': {
-                'text': '[' + meal + '] \n' + tomorrow_date.strftime("%m월 %d일 ") + nextdaystring[today] + '요일 식단표입니다. \n \n' + read_txt(meal, today, daystring)
+                'text': '[' + meal + '] \n' + tomorrow_date.strftime("%m월 %d일 ") + nextdaystring[today] + '요일 식단표입니다. \n \n' + data_from_db(meal, today, daystring)
             },
             'keyboard': {
                 'type': 'buttons',
@@ -68,7 +69,7 @@ def message(request):
     elif meal in daystring and meal != "일":
         return JsonResponse({
             'message': {
-                'text': days.strftime("%m월 %d일 ") + meal + '요일 식단표입니다. \n \n' + read_txt(meal, today, daystring)
+                'text': days.strftime("%m월 %d일 ") + meal + '요일 식단표입니다. \n \n' + data_from_db(meal, today, daystring)
             },
             'keyboard': {
                 'type': 'buttons',
@@ -85,19 +86,22 @@ def message(request):
             }
         })
 
-def read_txt(meal, today, daystring):
-    # 0(월요일) ~ 5(토요일).txt read
+def data_from_db(meal, today, daystring):
+    day_eng = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat']
+
+    con = sqlite3.connect("../meal.db")
+    cur = con.cursor()
+
     if meal == '오늘 식단표':
-        f = open(str(today) + ".txt", 'r')
+        query = ("SELECT " + (day_eng[today]) + " FROM meal")
     if meal == '내일 식단표':
         if today == 6:
-            f = open("0.txt", 'r')
+            query = ("SELECT sun FROM meal")
         else:
-            today = today + 1
-            f = open(str(today) + ".txt", 'r')
+            query = ("SELECT " + (day_eng[today + 1]) + " FROM meal")
     if meal in daystring:
-        f = open(str(daystring.index(meal)) + ".txt", 'r')
-    menu = f.read()
-    f.close()
+        query = (day_eng[daystring.index(meal)])
+    cur.execute(query)
+    data = cur.fetchone()
 
-    return menu
+    return data[0]

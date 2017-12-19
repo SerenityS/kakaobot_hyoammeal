@@ -1,10 +1,19 @@
 import urllib.request
+import sqlite3
+
 from bs4 import BeautifulSoup
 
 # 타학교에서 이용시 수정
 regioncode = 'gne.go.kr'
 schulcode = 'S100000747'
 
+# Tuple
+day = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat']
+meal = ['', '', '', '', '', '', '일요일은 급식이 제공되지 않습니다.']
+
+#########
+# Crawl #
+#########
 sccode = 1
 while sccode < 4:
     # NEIS에서 급식 파싱
@@ -25,31 +34,43 @@ while sccode < 4:
         td = menu_table.find_all('td')
 
         today = 0
-        while today < 7:
+        while today < 6:
             # 월요일 ~ 토요일 = td[8] ~ td[13]
             menu = td[today + 8]
 
             # 파싱 후 불필요한 태그 잔해물 제거
             menu = str(menu).replace('*', '').replace('<td', "").replace('<br/></td>', "").replace('</td>', '').replace('class="textC last">', '').replace('class="textC">','').replace('<br/>', '\n').replace('1.', '').replace('2.', '').replace('3.', '').replace('4.', '').replace('5.', '').replace('6.','').replace('7.', '').replace('8.', '').replace('9.', '').replace('10.', '').replace('11.', '').replace('12.', '').replace('13.', '').replace('14.', '').replace('15.', '').replace('1', '').replace(' ', '')
 
-            if menu == '' and today != 5 and sccode != 3:
+            if menu == '':
                 menu = '급식 정보가 존재하지 않습니다.\n급식이 없는 날일 수 있으니 확인 바랍니다.'
-
-            f = open(str(today) + ".txt", 'a')
 
             if today != 6:
                 if sccode == 1:
-                    f = open(str(today) + ".txt", 'w')
-                    f.write("[조식]\n")
+                    meal[today] = "[조식]\n" + menu
                 elif sccode == 2:
-                    f.write("\n\n[중식]\n")
-                elif sccode == 3 and today != 5:
-                    f.write("\n\n[석식]\n")
-                f.write(menu)
-            else:
-                f = open(str(today) + ".txt", 'w')
-                f.write("일요일은 급식이 제공되지 않습니다.")
-            f.close()
+                    meal[today] = meal[today] + "\n\n[중식]\n" + menu
+                elif sccode == 3:
+                    meal[today] = meal[today] + "\n\n[석식]\n" + menu
             today = today + 1
 
-        sccode = sccode + 1
+    sccode = sccode + 1
+
+#######
+# SQL #
+#######
+con = sqlite3.connect("../meal.db")
+cur = con.cursor()
+
+check = ("SELECT * FROM meal")
+cur.execute(check)
+data = cur.fetchone()
+
+if data is None:
+    insert = ("INSERT into meal('mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun') VALUES (?, ?, ?, ?, ?, ?, ?)")
+    cur.execute(insert, meal)
+else:
+    for i in day:
+        update = ("UPDATE meal SET " + i + " = '" + meal[(day.index(i))] + "' WHERE no = 1")
+        cur.execute(update)
+con.commit()
+con.close()
