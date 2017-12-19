@@ -100,7 +100,7 @@ def data_from_db(meal, today, daystring):
         else:
             query = ("SELECT " + (day_eng[today + 1]) + " FROM meal")
     if meal in daystring:
-        query = (day_eng[daystring.index(meal)])
+        query = ("SELECT " + (day_eng[daystring.index(meal)]) + " FROM meal")
     cur.execute(query)
     data = cur.fetchone()
 
