@@ -58,7 +58,7 @@ while sccode < 4:
 #######
 # SQL #
 #######
-con = sqlite3.connect("../meal.db")
+con = sqlite3.connect("meal.db")
 cur = con.cursor()
 
 check = ("SELECT * FROM meal")

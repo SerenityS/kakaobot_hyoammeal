@@ -43,7 +43,7 @@ sudo apt-get install python3 python3-pip python3-venv</pre>
 source myvenv/bin/activate
 </code></pre>
 ### 4. python 추가 요구 패키지 설치
-<code>pip install Django lxml beautifulsoup4 python-dateutil</code>
+<code>pip3 install Django lxml beautifulsoup4 python-dateutil</code>
 ### 5. 첫 마이그레이션 & 실행
 <code>python3 manage.py migrate</code>
 
@@ -88,7 +88,12 @@ schulCode = 'S100000747'
 라는 코드를 발견할 수 있다.
 여기서 regionCode는 각 시도교육청의 주소이며, schulCode는 [링크](http://weezzle.tistory.com/559) 를 참조하도록 하자.
 
-### 8. crontab을 통한 crawl.py의 주기적 실행
+### 8. crawl.py 첫 실행
+```
+python3 hyoammeal/crawl.py
+```
+
+### 9. crontab을 통한 crawl.py의 주기적 실행
 ```
 crontab -e
 ```

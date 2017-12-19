@@ -89,7 +89,7 @@ def message(request):
 def data_from_db(meal, today, daystring):
     day_eng = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat']
 
-    con = sqlite3.connect("../meal.db")
+    con = sqlite3.connect("meal.db")
     cur = con.cursor()
 
     if meal == '오늘 식단표':
