@@ -87,7 +87,7 @@ def message(request):
         })
 
 def data_from_db(meal, today, daystring):
-    day_eng = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat']
+    day_eng = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']
 
     con = sqlite3.connect("meal.db")
     cur = con.cursor()
@@ -96,7 +96,7 @@ def data_from_db(meal, today, daystring):
         query = ("SELECT " + (day_eng[today]) + " FROM meal")
     if meal == '내일 식단표':
         if today == 6:
-            query = ("SELECT sun FROM meal")
+            query = ("SELECT mon FROM meal")
         else:
             query = ("SELECT " + (day_eng[today + 1]) + " FROM meal")
     if meal in daystring:
