@@ -51,6 +51,12 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.security.SecurityMiddleware',
 )
 
+# HACK for support Django 2.2
+SILENCED_SYSTEM_CHECKS = [
+    'admin.E408',
+    'admin.E409',
+]
+
 ROOT_URLCONF = 'kakaobot.urls'
 
 TEMPLATES = [
