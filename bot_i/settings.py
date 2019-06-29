@@ -121,65 +121,35 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 LOGGING = {
-
     'version': 1,
-
     'disable_existing_loggers': False,
-
     'formatters': {                        # message 출력 포맷 형식
-
         'verbose': {
-
             'format' : "[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s",
-
             'datefmt' : "%d/%b/%Y %H:%M:%S"
-
         },
-
         'simple': {
-
             'format': '%(levelname)s %(message)s'
-
         },
-
     },
-
     'handlers': {
-
         'file': {
-
             'level': 'DEBUG',
-
             'class': 'logging.FileHandler',
-
             'filename': 'log.log',        # message가 저장될 파일명(파일명 변경 가능)
-
             'formatter': 'verbose'
-
         },
-
     },
-
     'loggers': {
-
         'django': {
-
             'handlers':['file'],
-
             'propagate': True,
-
-            'level':'DEBUG',
-
+            'level': 'DEBUG',
         },
-
         'hyoammeal': {                   # Project에서 생성한 app의 이름
-
             'handlers': ['file'],          # 다른 app을 생성 후 해당 app에서도
-
             'level': 'ERROR',          # 사용하고자 할 경우 해당 app 이름으로
-
         },                                      # 좌측 코드를 추가 작성해서 사용
-
     }
 
 }
