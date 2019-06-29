@@ -23,7 +23,7 @@ def hyoammeal(request):
         day = today_date + relativedelta(days=-today, weekday=select_date)
 
     return JsonResponse({
-        'text': day.strftime("%m월 %d일 ") + daystring[select_date] + ' 식단표입니다. \n \n' + data_from_db(select_date)
+        'text': day.strftime("%m월 %d일 ") + daystring[select_date] + '요일 식단표입니다. \n \n' + data_from_db(select_date)
     })
 
 def data_from_db(select_day):
