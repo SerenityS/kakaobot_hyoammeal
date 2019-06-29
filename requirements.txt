@@ -1,0 +1,5 @@
+bs4
+Django
+lxml
+python-dateutil
+urllib3
