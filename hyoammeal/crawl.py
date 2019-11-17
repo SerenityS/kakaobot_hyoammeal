@@ -1,5 +1,6 @@
 import urllib.request
 import sqlite3
+import re
 
 from bs4 import BeautifulSoup
 
@@ -7,7 +8,7 @@ from bs4 import BeautifulSoup
 regioncode = 'gne.go.kr'
 schulcode = 'S100000747'
 
-# Tuple
+# List
 day = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat']
 meal = ['', '', '', '', '', '', '일요일은 급식이 제공되지 않습니다.']
 
@@ -39,7 +40,8 @@ while sccode < 4:
             menu = td[today + 8]
 
             # 파싱 후 불필요한 태그 잔해물 제거
-            menu = str(menu).replace('*', '').replace('<td', "").replace('<br/></td>', "").replace('</td>', '').replace('class="textC last">', '').replace('class="textC">','').replace('<br/>', '\n').replace('1.', '').replace('2.', '').replace('3.', '').replace('4.', '').replace('5.', '').replace('6.','').replace('7.', '').replace('8.', '').replace('9.', '').replace('10.', '').replace('11.', '').replace('12.', '').replace('13.', '').replace('14.', '').replace('15.', '').replace('1', '').replace(' ', '')
+            menu = re.sub('[\d.]', '', str(menu))
+            menu = menu.replace("<br/>", "\n").replace('<td class="textC">', "").replace('</td>', "").replace('<td class="textC last">', "").strip()
 
             if menu == '':
                 menu = '급식 정보가 존재하지 않습니다.\n급식이 없는 날일 수 있으니 확인 바랍니다.'
